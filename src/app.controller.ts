@@ -4,7 +4,6 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -12,26 +11,13 @@ import {
 } from '@nestjs/common';
 import { AppService } from './app.service';
 
-interface Movie {
-  id: number;
-  title: string;
-  character: string[];
-}
-
 @Controller('movies')
 export class AppController {
-  private movies: Movie[] = [
-    { id: 1, title: '해리포터', character: ['해리포터', '간달프'] },
-    { id: 2, title: '스파이더맨', character: ['스파이더맨', '이쁜누님'] },
-  ];
-
-  private idCounter = 2;
-
   constructor(private readonly appService: AppService) {}
 
   @Get()
   getMovies() {
-    return this.movies;
+    return this.appService.findManyMovies();
   }
 
   @Get('search')
@@ -40,22 +26,12 @@ export class AppController {
       throw new BadRequestException('title을 입력해주세요');
     }
 
-    const searchResult = this.movies.filter((movie) =>
-      movie.title.startsWith(title),
-    );
-
-    return searchResult;
+    return this.appService.findSearchedMovie(title);
   }
 
   @Get(':id')
   getMovie(@Param('id') id: string) {
-    const movie = this.movies.find((movie) => movie.id === +id);
-
-    if (!movie) {
-      throw new NotFoundException('존재하지 않는 id의 영화입니다.');
-    }
-
-    return movie;
+    return this.appService.findMovie(+id);
   }
 
   @Post()
@@ -63,15 +39,7 @@ export class AppController {
     @Body('title') title: string,
     @Body('character') character: string[],
   ) {
-    const movie: Movie = {
-      id: ++this.idCounter,
-      title,
-      character,
-    };
-
-    this.movies.push(movie);
-
-    return movie;
+    return this.appService.createMovie(title, character);
   }
 
   @Patch(':id')
@@ -80,27 +48,11 @@ export class AppController {
     @Body('title') title: string,
     @Body('character') character: string[],
   ) {
-    const movie = this.movies.find((movie) => movie.id === +id);
-
-    if (!movie) {
-      throw new NotFoundException('존재하지 않는 id의 영화입니다.');
-    }
-
-    Object.assign(movie, { title, character });
-
-    return movie;
+    return this.appService.updateMovie(id, title, character);
   }
 
   @Delete(':id')
-  deleteMovie(@Param('id') id: number) {
-    const movie = this.movies.find((movie) => movie.id === +id);
-
-    if (!movie) {
-      throw new NotFoundException('존재하지 않는 id의 영화입니다.');
-    }
-
-    this.movies = this.movies.filter((movie) => movie.id !== +id);
-
-    return id;
+  deleteMovie(@Param('id') id: string) {
+    return this.appService.removeMovie(+id);
   }
 }
