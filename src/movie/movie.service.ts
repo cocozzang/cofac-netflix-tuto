@@ -7,7 +7,7 @@ export interface Movie {
 }
 
 @Injectable()
-export class AppService {
+export class MovieService {
   private movies: Movie[] = [
     { id: 1, title: '해리포터', character: ['해리포터', '간달프'] },
     { id: 2, title: '스파이더맨', character: ['스파이더맨', '이쁜누님'] },

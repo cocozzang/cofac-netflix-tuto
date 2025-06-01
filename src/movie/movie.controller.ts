@@ -1,23 +1,23 @@
 import {
-  BadRequestException,
-  Body,
   Controller,
-  Delete,
   Get,
-  Param,
-  Patch,
   Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  BadRequestException,
   Query,
 } from '@nestjs/common';
-import { AppService } from './app.service';
+import { MovieService } from './movie.service';
 
-@Controller('movies')
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+@Controller('movie')
+export class MovieController {
+  constructor(private readonly movieService: MovieService) {}
 
   @Get()
   getMovies() {
-    return this.appService.findManyMovies();
+    return this.movieService.findManyMovies();
   }
 
   @Get('search')
@@ -26,12 +26,12 @@ export class AppController {
       throw new BadRequestException('title을 입력해주세요');
     }
 
-    return this.appService.findSearchedMovie(title);
+    return this.movieService.findSearchedMovie(title);
   }
 
   @Get(':id')
   getMovie(@Param('id') id: string) {
-    return this.appService.findMovie(+id);
+    return this.movieService.findMovie(+id);
   }
 
   @Post()
@@ -39,7 +39,7 @@ export class AppController {
     @Body('title') title: string,
     @Body('character') character: string[],
   ) {
-    return this.appService.createMovie(title, character);
+    return this.movieService.createMovie(title, character);
   }
 
   @Patch(':id')
@@ -48,11 +48,11 @@ export class AppController {
     @Body('title') title: string,
     @Body('character') character: string[],
   ) {
-    return this.appService.updateMovie(id, title, character);
+    return this.movieService.updateMovie(id, title, character);
   }
 
   @Delete(':id')
   deleteMovie(@Param('id') id: string) {
-    return this.appService.removeMovie(+id);
+    return this.movieService.removeMovie(+id);
   }
 }
