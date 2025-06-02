@@ -1,19 +1,30 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-
-export interface Movie {
-  id: number;
-  title: string;
-  character: string[];
-}
+import { CreateMovieDto } from './dto/create-movie.dto';
+import { UpdateMovieDto } from './dto/update-movie.dto';
+import { Movie, MovieGenre } from './entity/movie.entity';
 
 @Injectable()
 export class MovieService {
   private movies: Movie[] = [
-    { id: 1, title: '해리포터', character: ['해리포터', '간달프'] },
-    { id: 2, title: '스파이더맨', character: ['스파이더맨', '이쁜누님'] },
+    { id: 1, title: '해리포터', genre: MovieGenre.Fantasy },
+    { id: 2, title: '스파이더맨', genre: MovieGenre.Action },
   ];
 
   private idCounter = 2;
+
+  constructor() {
+    const movie1 = new Movie();
+
+    movie1.id = 1;
+    movie1.title = '해리포터';
+    movie1.genre = MovieGenre.Fantasy;
+
+    const movie2 = new Movie();
+
+    movie2.id = 2;
+    movie2.title = '스파이더맨';
+    movie2.genre = MovieGenre.Action;
+  }
 
   findManyMovies() {
     return this.movies;
@@ -37,11 +48,11 @@ export class MovieService {
     return movie;
   }
 
-  createMovie(title: string, character: string[]) {
+  createMovie(dto: CreateMovieDto) {
     const movie: Movie = {
       id: ++this.idCounter,
-      title,
-      character,
+      title: dto.title,
+      genre: dto.genre,
     };
 
     this.movies.push(movie);
@@ -49,14 +60,14 @@ export class MovieService {
     return movie;
   }
 
-  updateMovie(id: number, title: string, character: string[]) {
-    const movie = this.movies.find((movie) => movie.id === +id);
+  updateMovie(movieId: number, dto: UpdateMovieDto) {
+    const movie = this.movies.find((movie) => movie.id === movieId);
 
     if (!movie) {
       throw new NotFoundException('존재하지 않는 id의 영화입니다.');
     }
 
-    Object.assign(movie, { title, character });
+    Object.assign(movie, dto);
 
     return movie;
   }
