@@ -9,4 +9,8 @@ export class CreateMovieDto {
   @IsNotEmpty()
   @IsEnum(MovieGenre)
   genre: MovieGenre;
+
+  @IsNotEmpty()
+  @IsString()
+  detail: string;
 }

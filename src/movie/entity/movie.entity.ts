@@ -1,11 +1,12 @@
+import { BaseModelEntity } from 'src/common/entity/base-model.entity';
 import {
   Column,
-  CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
-  VersionColumn,
 } from 'typeorm';
+import { MovieDetailEntity } from './movie-detail.entity';
 
 export enum MovieGenre {
   Fantasy = 'fantasy',
@@ -13,7 +14,7 @@ export enum MovieGenre {
 }
 
 @Entity('movie')
-export class MovieEntity {
+export class MovieEntity extends BaseModelEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -23,12 +24,9 @@ export class MovieEntity {
   @Column()
   genre: MovieGenre;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @VersionColumn()
-  version: number;
+  @OneToOne(() => MovieDetailEntity, (movieDetail) => movieDetail.id, {
+    cascade: true,
+  })
+  @JoinColumn()
+  detail: MovieDetailEntity;
 }
