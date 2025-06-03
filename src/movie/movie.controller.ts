@@ -6,11 +6,10 @@ import {
   Patch,
   Param,
   Delete,
-  BadRequestException,
-  Query,
   ParseIntPipe,
   UseInterceptors,
   ClassSerializerInterceptor,
+  Query,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
@@ -22,17 +21,8 @@ export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
   @Get()
-  getMovies() {
-    return this.movieService.findManyMovies();
-  }
-
-  @Get('search')
-  searchMovie(@Query('title') title?: string) {
-    if (!title) {
-      throw new BadRequestException('title을 입력해주세요');
-    }
-
-    return this.movieService.findSearchedMovie(title);
+  getMovies(@Query('title') title?: string) {
+    return this.movieService.findManyMovies(title);
   }
 
   @Get(':id')
