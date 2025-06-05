@@ -3,30 +3,42 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MovieDetailEntity } from './movie-detail.entity';
-
-export enum MovieGenre {
-  Fantasy = 'fantasy',
-  Action = 'action',
-}
+import { DirectorEntity } from 'src/director/entity/director.entity';
+import { GenreEntity } from 'src/genre/entity/genre.entity';
 
 @Entity('movie')
 export class MovieEntity extends BaseModelEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   title: string;
 
-  @Column()
-  genre: MovieGenre;
+  @ManyToMany(() => GenreEntity, (genre) => genre.movies, {
+    nullable: false,
+  })
+  @JoinTable()
+  genres: GenreEntity[];
 
   @OneToOne(() => MovieDetailEntity, (movieDetail) => movieDetail.id, {
     cascade: true,
+    nullable: false,
   })
   @JoinColumn()
   detail: MovieDetailEntity;
+
+  @ManyToOne(() => DirectorEntity, (director) => director.id, {
+    cascade: true,
+    nullable: false,
+  })
+  director: DirectorEntity;
 }

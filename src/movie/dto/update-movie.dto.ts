@@ -1,5 +1,11 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { MovieGenre } from '../entity/movie.entity';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class UpdateMovieDto {
   @IsNotEmpty()
@@ -9,11 +15,17 @@ export class UpdateMovieDto {
 
   @IsNotEmpty()
   @IsOptional()
-  @IsEnum(MovieGenre)
-  genre?: MovieGenre;
+  @IsString()
+  detail?: string;
 
   @IsNotEmpty()
   @IsOptional()
-  @IsString()
-  detail?: string;
+  @IsNumber()
+  directorId?: number;
+
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsNumber({}, { each: true })
+  @IsOptional()
+  genreIds?: number[];
 }

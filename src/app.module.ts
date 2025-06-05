@@ -5,6 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { MovieEntity } from './movie/entity/movie.entity';
 import { MovieDetailEntity } from './movie/entity/movie-detail.entity';
+import { DirectorModule } from './director/director.module';
+import { DirectorEntity } from './director/entity/director.entity';
+import { GenreModule } from './genre/genre.module';
+import { GenreEntity } from './genre/entity/genre.entity';
 
 @Module({
   imports: [
@@ -31,11 +35,13 @@ import { MovieDetailEntity } from './movie/entity/movie-detail.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        entities: [MovieEntity, MovieDetailEntity],
+        entities: [MovieEntity, MovieDetailEntity, DirectorEntity, GenreEntity],
         synchronize: true,
       }),
     }),
     MovieModule,
+    DirectorModule,
+    GenreModule,
   ],
 })
 export class AppModule {}
