@@ -1,16 +1,20 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
+  UseInterceptors,
 } from '@nestjs/common';
 import { DirectorService } from './director.service';
 import { CreateDirectorDto } from './dto/create-director.dto';
 import { UpdateDirectorDto } from './dto/update-director.dto';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('director')
 export class DirectorController {
   constructor(private readonly directorService: DirectorService) {}
@@ -21,8 +25,8 @@ export class DirectorController {
   }
 
   @Get(':id')
-  getDirectoryById(@Param('id') directorId: string) {
-    return this.directorService.findDirectorById(+directorId);
+  getDirectoryById(@Param('id', ParseIntPipe) directorId: number) {
+    return this.directorService.findDirectorById(directorId);
   }
 
   @Post()
@@ -32,14 +36,14 @@ export class DirectorController {
 
   @Patch(':id')
   patchDirector(
-    @Param('id') directorId: string,
+    @Param('id', ParseIntPipe) directorId: number,
     @Body() updateDirectorDto: UpdateDirectorDto,
   ) {
-    return this.directorService.updateDirector(+directorId, updateDirectorDto);
+    return this.directorService.updateDirector(directorId, updateDirectorDto);
   }
 
   @Delete(':id')
-  deleteDirector(@Param('id') directorId: string) {
-    return this.directorService.removeDirector(+directorId);
+  deleteDirector(@Param('id', ParseIntPipe) directorId: number) {
+    return this.directorService.removeDirector(directorId);
   }
 }
