@@ -12,6 +12,7 @@ import { GenreEntity } from './genre/entity/genre.entity';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { UserEntity } from './user/entity/user.entity';
+import { envVariableKeys } from './common/const/env.const';
 
 @Module({
   imports: [
@@ -35,12 +36,12 @@ import { UserEntity } from './user/entity/user.entity';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: configService.get<string>('DB_TYPE') as 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_DATABASE'),
+        type: configService.get<string>(envVariableKeys.dbType) as 'postgres',
+        host: configService.get<string>(envVariableKeys.dbHost),
+        port: configService.get<number>(envVariableKeys.dbPort),
+        username: configService.get<string>(envVariableKeys.dbUsername),
+        password: configService.get<string>(envVariableKeys.dbPassword),
+        database: configService.get<string>(envVariableKeys.dbDatabase),
         entities: [
           MovieEntity,
           MovieDetailEntity,
