@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './strategy/local.strategy';
-import { UserEntity } from 'src/user/entity/user.entity';
-import { JwtAuthGuard } from './strategy/jwt.strategy';
+import { JwtAuthGuard, JwtPayloadInterface } from './strategy/jwt.strategy';
+import { Request } from 'express';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('auth')
@@ -29,25 +29,22 @@ export class AuthController {
   }
 
   @Post('token/access')
-  async rotateAccessToken(@Headers('authorization') token: string) {
-    const payload = await this.authService.parseBearerToken(token, true);
+  async rotateAccessToken(@Req() req: Request) {
+    const user = req.user as JwtPayloadInterface;
 
     return {
-      accessToken: await this.authService.issueToken(
-        { id: payload.sub, role: payload.role },
-        false,
-      ),
+      accessToken: await this.authService.issueToken(user, false),
     };
   }
 
   @UseGuards(LocalAuthGuard)
   @Post('login/passport')
   async loginUserPassport(@Req() req: Express.Request) {
-    const user = req.user as UserEntity;
+    const { sub, role } = req.user as JwtPayloadInterface;
 
     return {
-      refreshToken: await this.authService.issueToken(user, true),
-      accessToken: await this.authService.issueToken(user, false),
+      refreshToken: await this.authService.issueToken({ sub, role }, true),
+      accessToken: await this.authService.issueToken({ sub, role }, false),
     };
   }
 

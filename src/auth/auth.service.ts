@@ -125,7 +125,7 @@ export class AuthService {
   }
 
   async issueToken(
-    user: Pick<UserEntity, 'id' | 'role'>,
+    user: Pick<JwtPayloadInterface, 'sub' | 'role'>,
     isRefreshToken: boolean,
   ) {
     const refreshTokenSecret = this.configService.get<string>(
@@ -137,7 +137,7 @@ export class AuthService {
 
     const token = await this.jwtService.signAsync(
       {
-        sub: user.id,
+        sub: user.sub,
         role: user.role,
         type: isRefreshToken ? 'refresh' : 'access',
       },
@@ -156,8 +156,14 @@ export class AuthService {
     const user = await this.authenticate(email, password);
 
     return {
-      refreshToken: await this.issueToken(user, true),
-      accessToken: await this.issueToken(user, false),
+      refreshToken: await this.issueToken(
+        { sub: user.id, role: user.role },
+        true,
+      ),
+      accessToken: await this.issueToken(
+        { sub: user.id, role: user.role },
+        false,
+      ),
     };
   }
 }
