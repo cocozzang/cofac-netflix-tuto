@@ -77,10 +77,8 @@ export class AuthService {
 
       return payload;
     } catch (error) {
-      if (error instanceof Error) {
-        if (error.name === 'TokenExpiredError') {
-          throw new UnauthorizedException('token이 만료되었습니다.');
-        }
+      if (error instanceof Error && error.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('token이 만료되었습니다.');
       }
 
       throw error;
