@@ -14,10 +14,10 @@ import {
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
-import { MovieTitleValidationPipe } from './pipe/movie-title-validation.pipe';
 import { Public } from 'src/auth/decorator/public.decorator';
 import { RBAC } from 'src/auth/decorator/rbac.decorator';
 import { RoleEnum } from 'src/user/entity/user.entity';
+import { GetMoviesDto } from './dto/get-movies.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('movie')
@@ -26,8 +26,8 @@ export class MovieController {
 
   @Public()
   @Get()
-  getMovies(@Query('title', MovieTitleValidationPipe) title?: string) {
-    return this.movieService.findManyMovies(title);
+  getMovies(@Query() dto: GetMoviesDto) {
+    return this.movieService.findManyMovies(dto);
   }
 
   @Public()
