@@ -26,7 +26,7 @@ export class MovieService {
   ) {}
 
   async findManyMovies(dto: GetMoviesDto) {
-    const { title, take, page } = dto;
+    const { title } = dto;
 
     const qb = this.movieRepository
       .createQueryBuilder('movie')
@@ -37,24 +37,13 @@ export class MovieService {
       qb.where('movie.title LIKE :title', { title: `%${title}%` });
     }
 
-    if (take && page) {
-      this.commonService.applyPagePaginationParamsToQb(qb, dto);
-    }
+    // if (take && page) {
+    //   this.commonService.applyPagePaginationParamsToQb(qb, dto);
+    // }
+
+    this.commonService.applyCursorPaginationParamsToQb(qb, dto);
 
     return await qb.getManyAndCount();
-
-    //   if (!title)
-    //     return [
-    //       await this.movieRepository.find({ relations: ['genres', 'director'] }),
-    //       await this.movieRepository.count(),
-    //     ];
-    //
-    //   return this.movieRepository.findAndCount({
-    //     where: {
-    //       title: Like(`%${title}%`),
-    //     },
-    //     relations: ['genres', 'director'],
-    //   });
   }
 
   async findMovieById(movieId: number) {
