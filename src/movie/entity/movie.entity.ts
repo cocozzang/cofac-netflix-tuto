@@ -29,6 +29,9 @@ export class MovieEntity extends BaseModelEntity {
   @JoinTable()
   genres: GenreEntity[];
 
+  @Column({ default: 0 })
+  likeCount: number;
+
   @OneToOne(() => MovieDetailEntity, (movieDetail) => movieDetail.id, {
     cascade: true,
     nullable: false,

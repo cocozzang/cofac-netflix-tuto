@@ -37,13 +37,18 @@ export class MovieService {
       qb.where('movie.title LIKE :title', { title: `%${title}%` });
     }
 
-    // if (take && page) {
-    //   this.commonService.applyPagePaginationParamsToQb(qb, dto);
-    // }
+    // this.commonService.applyCursorPaginationParamsToQb(qb, dto);
 
-    this.commonService.applyCursorPaginationParamsToQb(qb, dto);
+    const { nextCursor } =
+      await this.commonService.applyCursorPaginationParamsToQb(qb, dto);
 
-    return await qb.getManyAndCount();
+    const [data, count] = await qb.getManyAndCount();
+
+    return {
+      data,
+      nextCursor,
+      count,
+    };
   }
 
   async findMovieById(movieId: number) {
