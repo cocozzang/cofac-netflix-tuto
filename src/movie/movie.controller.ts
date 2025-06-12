@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   Query,
+  Req,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
@@ -18,6 +19,8 @@ import { Public } from 'src/auth/decorator/public.decorator';
 import { RBAC } from 'src/auth/decorator/rbac.decorator';
 import { RoleEnum } from 'src/user/entity/user.entity';
 import { GetMoviesDto } from './dto/get-movies.dto';
+import { TransactionInterceptor } from 'src/common/interceptor/transaction.interceptor';
+import { QueryRunner } from 'typeorm';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('movie')
@@ -25,6 +28,7 @@ export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
   @Public()
+  // @UseInterceptors(CacheInterceptor)
   @Get()
   getMovies(@Query() dto: GetMoviesDto) {
     return this.movieService.findManyMovies(dto);
@@ -40,9 +44,15 @@ export class MovieController {
   }
 
   @RBAC(RoleEnum.admin)
+  @UseInterceptors(TransactionInterceptor)
   @Post()
-  postMovie(@Body() dto: CreateMovieDto) {
-    return this.movieService.createMovie(dto);
+  postMovie(
+    @Body() dto: CreateMovieDto,
+    @Req() req: Request & { queryRunner: QueryRunner },
+  ) {
+    const qr = req.queryRunner;
+
+    return this.movieService.createMovie(dto, qr);
   }
 
   @RBAC(RoleEnum.admin)
