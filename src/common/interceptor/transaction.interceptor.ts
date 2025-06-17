@@ -33,7 +33,7 @@ export class TransactionInterceptor implements NestInterceptor {
     // 덤으로 db부하가 심할떄, transaction완료가 timeover날수도 있는 에러도 catchError에서 핸들링 가능함
     return next.handle().pipe(
       concatMap(async (value: unknown) => {
-        await qr.commitTransaction();
+        await qr.commitTransaction(); // 여기서 error가 나면 아래 qr.relase가 실행되지않고 catchError로 바로 넘어감
         await qr.release();
 
         return value;
@@ -41,7 +41,7 @@ export class TransactionInterceptor implements NestInterceptor {
       catchError((error) => {
         return from(
           (async () => {
-            await qr.rollbackTransaction();
+            await qr.rollbackTransaction(); // 여기서 error가 나면 qr.release가 실행되지않고 error가 throw됨
             await qr.release();
             throw error;
           })(),
