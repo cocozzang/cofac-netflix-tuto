@@ -39,6 +39,9 @@ export class MovieEntity extends BaseModelEntity {
   @JoinColumn()
   detail: MovieDetailEntity;
 
+  @Column()
+  movieFilePath: string;
+
   @ManyToOne(() => DirectorEntity, (director) => director.id, {
     cascade: true,
     nullable: false,
