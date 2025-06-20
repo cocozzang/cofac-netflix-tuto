@@ -11,8 +11,6 @@ import {
   ClassSerializerInterceptor,
   Query,
   Req,
-  BadRequestException,
-  UploadedFile,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
@@ -23,7 +21,6 @@ import { RoleEnum } from 'src/user/entity/user.entity';
 import { GetMoviesDto } from './dto/get-movies.dto';
 import { TransactionInterceptor } from 'src/common/interceptor/transaction.interceptor';
 import { QueryRunner } from 'typeorm';
-import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('movie')
@@ -48,33 +45,12 @@ export class MovieController {
 
   @RBAC(RoleEnum.admin)
   @UseInterceptors(TransactionInterceptor)
-  @UseInterceptors(
-    FileInterceptor('movie', {
-      limits: {
-        fileSize: 50000000,
-      },
-      fileFilter(req, file, callback) {
-        console.log(file);
-
-        if (file.mimetype !== 'video/mp4') {
-          return callback(
-            new BadRequestException('mp4파일을 업로드 해주세요.'),
-            false,
-          );
-        }
-
-        return callback(null, true);
-      },
-    }),
-  )
   @Post()
   postMovie(
     @Body() dto: CreateMovieDto,
     @Req() req: Request & { queryRunner: QueryRunner },
-    @UploadedFile()
-    movie: Express.Multer.File,
   ) {
-    return this.movieService.createMovie(dto, movie.filename, req.queryRunner);
+    return this.movieService.createMovie(dto, req.queryRunner);
   }
 
   @RBAC(RoleEnum.admin)

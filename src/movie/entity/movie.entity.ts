@@ -12,6 +12,7 @@ import {
 import { MovieDetailEntity } from './movie-detail.entity';
 import { DirectorEntity } from 'src/director/entity/director.entity';
 import { GenreEntity } from 'src/genre/entity/genre.entity';
+import { Transform } from 'class-transformer';
 
 @Entity('movie')
 export class MovieEntity extends BaseModelEntity {
@@ -40,6 +41,7 @@ export class MovieEntity extends BaseModelEntity {
   detail: MovieDetailEntity;
 
   @Column()
+  @Transform(({ value }) => `http://localhost:3000/${value}`)
   movieFilePath: string;
 
   @ManyToOne(() => DirectorEntity, (director) => director.id, {
