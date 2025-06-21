@@ -21,6 +21,7 @@ import { RoleEnum } from 'src/user/entity/user.entity';
 import { GetMoviesDto } from './dto/get-movies.dto';
 import { TransactionInterceptor } from 'src/common/interceptor/transaction.interceptor';
 import { QueryRunner } from 'typeorm';
+import { UserId } from 'src/user/decorator/user.decorator';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('movie')
@@ -49,8 +50,9 @@ export class MovieController {
   postMovie(
     @Body() dto: CreateMovieDto,
     @Req() req: Request & { queryRunner: QueryRunner },
+    @UserId() userId: number,
   ) {
-    return this.movieService.createMovie(dto, req.queryRunner);
+    return this.movieService.createMovie(dto, userId, req.queryRunner);
   }
 
   @RBAC(RoleEnum.admin)
