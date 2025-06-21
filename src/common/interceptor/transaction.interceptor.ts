@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { catchError, concatMap, from, Observable } from 'rxjs';
-import { DataSource, QueryRunner } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class TransactionInterceptor implements NestInterceptor {
@@ -16,9 +16,7 @@ export class TransactionInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler<any>,
   ): Promise<Observable<any>> {
-    const req: Request & { queryRunner: QueryRunner } = context
-      .switchToHttp()
-      .getRequest();
+    const req: Request = context.switchToHttp().getRequest();
 
     const qr = this.dataSource.createQueryRunner();
 

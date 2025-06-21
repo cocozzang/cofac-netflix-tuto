@@ -1,4 +1,5 @@
 import { JwtPayloadInterface } from 'src/auth/strategy/jwt.strategy';
+import { QueryRunner } from 'typeorm';
 
 export type AuthUser = JwtPayloadInterface;
 
@@ -9,6 +10,7 @@ declare global {
 
     interface Request {
       user?: User;
+      queryRunner?: QueryRunner;
     }
   }
 }
