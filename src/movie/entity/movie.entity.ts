@@ -13,11 +13,15 @@ import { MovieDetailEntity } from './movie-detail.entity';
 import { DirectorEntity } from 'src/director/entity/director.entity';
 import { GenreEntity } from 'src/genre/entity/genre.entity';
 import { Transform } from 'class-transformer';
+import { UserEntity } from 'src/user/entity/user.entity';
 
 @Entity('movie')
 export class MovieEntity extends BaseModelEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ManyToOne(() => UserEntity, (user) => user.createdMovies)
+  creator: UserEntity;
 
   @Column({
     unique: true,
