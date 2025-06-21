@@ -7,6 +7,8 @@ import { MovieDetailEntity } from './entity/movie-detail.entity';
 import { DirectorEntity } from 'src/director/entity/director.entity';
 import { GenreEntity } from 'src/genre/entity/genre.entity';
 import { CommonModule } from 'src/common/common.module';
+import { UserEntity } from 'src/user/entity/user.entity';
+import { MovieUserLikeEntity } from './entity/movie-user-like.entity';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import { CommonModule } from 'src/common/common.module';
       MovieDetailEntity,
       DirectorEntity,
       GenreEntity,
+      UserEntity,
+      MovieUserLikeEntity,
     ]),
     CommonModule,
   ],

@@ -70,4 +70,24 @@ export class MovieController {
   deleteMovie(@Param('id', ParseIntPipe) id: number) {
     return this.movieService.removeMovie(id);
   }
+
+  @Post(':id/like')
+  createMovieLike(
+    @Param('id', ParseIntPipe) movieId: number,
+    @CurrentUser() user: AuthUser,
+  ) {
+    const userId = user.sub;
+
+    return this.movieService.toggleMovieLike(movieId, userId, true);
+  }
+
+  @Post(':id/dislike')
+  createMovieDislike(
+    @Param('id', ParseIntPipe) movieId: number,
+    @CurrentUser() user: AuthUser,
+  ) {
+    const userId = user.sub;
+
+    return this.movieService.toggleMovieLike(movieId, userId, false);
+  }
 }
