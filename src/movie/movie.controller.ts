@@ -32,8 +32,10 @@ export class MovieController {
   @Public()
   // @UseInterceptors(CacheInterceptor)
   @Get()
-  getMovies(@Query() dto: GetMoviesDto) {
-    return this.movieService.findManyMovies(dto);
+  getMovies(@Query() dto: GetMoviesDto, @CurrentUser() user?: AuthUser) {
+    const userId = user && user.sub;
+
+    return this.movieService.findManyMovies(dto, userId);
   }
 
   @Public()
