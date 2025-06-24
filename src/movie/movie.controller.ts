@@ -24,6 +24,7 @@ import { QueryRunner } from 'typeorm';
 import { AuthUser } from 'types/express';
 import { CurrentQueryRunner } from 'src/common/decorator/query-runner.decorator';
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
+import { Throttle } from 'src/common/decorator/throttle.decorator';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('movie')
@@ -31,7 +32,7 @@ export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
   @Public()
-  // @UseInterceptors(CacheInterceptor)
+  @Throttle({ count: 5, unit: 'minite' })
   @Get()
   getMovies(@Query() dto: GetMoviesDto, @CurrentUser() user?: AuthUser) {
     const userId = user && user.sub;
