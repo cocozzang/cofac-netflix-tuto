@@ -18,17 +18,18 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { UserEntity } from './user/entity/user.entity';
 import { envVariableKeys } from './common/const/env.const';
-import { BearerTokenMiddleware } from './auth/middleware/bearer-toekn.middleware';
+import { BearerTokenMiddleware } from './auth/middleware/bearer-token.middleware';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/auth.guard';
 import { RBACGuard } from './auth/guard/rbac.guard';
 import { CommonModule } from './common/common.module';
 import { ResponseTimeInterceptor } from './common/interceptor/response-time.interceptor';
-import { ForbiddenExceptionFilter } from './common/filter/forbidden.filter';
 import { QueryFailedExceptionFilter } from './common/filter/query-failed.filter';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'node:path';
 import { MovieUserLikeEntity } from './movie/entity/movie-user-like.entity';
+import { CacheModule } from '@nestjs/cache-manager';
+import { ThrottleInterceptor } from './common/interceptor/throttle.interceptor';
 
 @Module({
   imports: [
@@ -74,6 +75,10 @@ import { MovieUserLikeEntity } from './movie/entity/movie-user-like.entity';
       rootPath: join(process.cwd(), 'public'),
       serveRoot: '/public/',
     }),
+    CacheModule.register({
+      ttl: 10 * 1000, // 10 seconds
+      isGlobal: true,
+    }),
     MovieModule,
     DirectorModule,
     GenreModule,
@@ -94,8 +99,9 @@ import { MovieUserLikeEntity } from './movie/entity/movie-user-like.entity';
       provide: APP_INTERCEPTOR,
       useClass: ResponseTimeInterceptor,
     },
-    { provide: APP_FILTER, useClass: ForbiddenExceptionFilter },
+    // { provide: APP_FILTER, useClass: ForbiddenExceptionFilter },
     { provide: APP_FILTER, useClass: QueryFailedExceptionFilter },
+    { provide: APP_INTERCEPTOR, useClass: ThrottleInterceptor },
   ],
 })
 export class AppModule implements NestModule {

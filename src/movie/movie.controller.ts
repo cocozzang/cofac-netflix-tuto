@@ -23,6 +23,7 @@ import { CurrentUser } from 'src/user/decorator/user.decorator';
 import { QueryRunner } from 'typeorm';
 import { AuthUser } from 'types/express';
 import { CurrentQueryRunner } from 'src/common/decorator/query-runner.decorator';
+import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('movie')
@@ -36,6 +37,15 @@ export class MovieController {
     const userId = user && user.sub;
 
     return this.movieService.findManyMovies(dto, userId);
+  }
+
+  @Public()
+  @UseInterceptors(CacheInterceptor)
+  @CacheKey('getMoviesRecent')
+  @CacheTTL(1000)
+  @Get('recent')
+  getMoviesRecent() {
+    return this.movieService.findRecentMovies();
   }
 
   @Public()

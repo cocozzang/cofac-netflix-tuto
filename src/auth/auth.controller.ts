@@ -1,4 +1,5 @@
 import {
+  Body,
   ClassSerializerInterceptor,
   Controller,
   Get,
@@ -31,6 +32,12 @@ export class AuthController {
     return this.authService.login(token);
   }
 
+  @Post('token/block')
+  blockToken(@Body('token') token: string) {
+    return this.authService.tokenBlock(token);
+  }
+
+  @Public()
   @Post('token/access')
   async rotateAccessToken(@Req() req: Request) {
     const user = req.user as JwtPayloadInterface;
