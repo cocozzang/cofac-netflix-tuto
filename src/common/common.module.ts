@@ -6,6 +6,8 @@ import { diskStorage } from 'multer';
 import { join } from 'path';
 import { v4 } from 'uuid';
 import { TaskService } from './task.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MovieEntity } from 'src/movie/entity/movie.entity';
 
 @Module({
   imports: [
@@ -25,6 +27,7 @@ import { TaskService } from './task.service';
         },
       }),
     }),
+    TypeOrmModule.forFeature([MovieEntity]),
   ],
   controllers: [CommonController],
   providers: [CommonService, TaskService],

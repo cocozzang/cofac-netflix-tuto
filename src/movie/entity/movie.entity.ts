@@ -39,6 +39,9 @@ export class MovieEntity extends BaseModelEntity {
   @Column({ default: 0 })
   likeCount: number;
 
+  @Column({ default: 0 })
+  dislikeCount: number;
+
   @OneToOne(() => MovieDetailEntity, (movieDetail) => movieDetail.id, {
     cascade: true,
     nullable: false,
