@@ -5,16 +5,26 @@ import { readdir, unlink } from 'fs/promises';
 import { join, parse } from 'path';
 import { MovieEntity } from 'src/movie/entity/movie.entity';
 import { Repository } from 'typeorm';
+import { DefaultLogger } from './logger/default.logger';
 
 @Injectable()
 export class TaskService {
+  // private readonly logger = new Logger(TaskService.name);
+
   constructor(
     @InjectRepository(MovieEntity)
     private readonly movieRepository: Repository<MovieEntity>,
+    private readonly logger: DefaultLogger,
   ) {}
 
+  @Cron('*/10 * * * * *')
   logEverySecond() {
-    console.log('1초마다 로그 찍힘');
+    this.logger.fatal('FATAL 레벨 로그');
+    this.logger.error('ERROR 레벨 로그');
+    this.logger.warn('WARN 레벨 로그');
+    this.logger.log('LOG 레벨 로그');
+    this.logger.debug('DEBUG 레벨 로그');
+    this.logger.verbose('VERBOSE 레벨 로그');
   }
 
   @Cron('0 0 0 * * *')
