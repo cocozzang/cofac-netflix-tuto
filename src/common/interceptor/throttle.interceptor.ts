@@ -59,10 +59,12 @@ export class ThrottleInterceptor implements NestInterceptor {
       throw new ForbiddenException('요청 가능 횟수를 넘어섰습니다.');
 
     return next.handle().pipe(
-      concatMap(async () => {
+      concatMap(async (value: unknown) => {
         const count = (await this.cacheManager.get<number>(key)) ?? 0;
 
         await this.cacheManager.set(key, count + 1, 60000);
+
+        return value;
       }),
     );
   }

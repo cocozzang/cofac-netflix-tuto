@@ -53,8 +53,6 @@ export class MovieService {
       qb.where('movie.title LIKE :title', { title: `%${title}%` });
     }
 
-    // this.commonService.applyCursorPaginationParamsToQb(qb, dto);
-
     const { nextCursor } =
       await this.commonService.applyCursorPaginationParamsToQb(qb, dto);
 
