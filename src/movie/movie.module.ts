@@ -22,7 +22,7 @@ import { MovieUserLikeEntity } from './entity/movie-user-like.entity';
     ]),
     CommonModule,
   ],
-  controllers: [MovieControllerV2, MovieController],
+  controllers: [MovieController],
   providers: [MovieService],
 })
 export class MovieModule {}
