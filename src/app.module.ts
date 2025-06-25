@@ -31,6 +31,8 @@ import { MovieUserLikeEntity } from './movie/entity/movie-user-like.entity';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ThrottleInterceptor } from './common/interceptor/throttle.interceptor';
 import { ScheduleModule } from '@nestjs/schedule';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
 
 @Module({
   imports: [
@@ -81,6 +83,33 @@ import { ScheduleModule } from '@nestjs/schedule';
       isGlobal: true,
     }),
     ScheduleModule.forRoot(),
+    WinstonModule.forRoot({
+      level: 'debug',
+      transports: [
+        new winston.transports.Console({
+          format: winston.format.combine(
+            winston.format.colorize({ all: true }),
+            winston.format.timestamp(),
+            winston.format.printf(
+              (info) =>
+                `${info.timestamp as string} [${info.context as string}] ${info.level} ${info.message as string}`,
+            ),
+          ),
+        }),
+        new winston.transports.File({
+          dirname: join(process.cwd(), 'logs'),
+          filename: 'logs.log',
+          format: winston.format.combine(
+            // winston.format.colorize({ all: true }),
+            winston.format.timestamp(),
+            winston.format.printf(
+              (info) =>
+                `${info.timestamp as string} [${info.context as string}] ${info.level} ${info.message as string}`,
+            ),
+          ),
+        }),
+      ],
+    }),
     MovieModule,
     DirectorModule,
     GenreModule,
@@ -112,7 +141,10 @@ export class AppModule implements NestModule {
       .apply(BearerTokenMiddleware)
       .exclude(
         { path: 'auth/login', method: RequestMethod.POST },
-        { path: 'auth/register', method: RequestMethod.POST },
+        {
+          path: 'auth/register',
+          method: RequestMethod.POST,
+        },
       )
       .forRoutes('*');
   }
