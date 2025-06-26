@@ -19,6 +19,7 @@ import { rename } from 'node:fs/promises';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { MovieUserLikeEntity } from './entity/movie-user-like.entity';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class MovieService {
@@ -86,6 +87,8 @@ export class MovieService {
         likeStatus: x.id in likedMovieMap ? likedMovieMap[x.id] : null,
       }));
     }
+
+    data = data.map((movie) => plainToClass(MovieEntity, movie));
 
     return {
       data,
