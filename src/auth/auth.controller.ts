@@ -3,7 +3,6 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
-  Headers,
   Post,
   Req,
   UseGuards,
@@ -14,21 +13,26 @@ import { LocalAuthGuard } from './strategy/local.strategy';
 import { JwtAuthGuard, JwtPayloadInterface } from './strategy/jwt.strategy';
 import { Request } from 'express';
 import { Public } from './decorator/public.decorator';
+import { ApiBasicAuth, ApiBearerAuth } from '@nestjs/swagger';
+import { Authorization } from './decorator/authorization.decorator';
 
+@ApiBearerAuth()
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiBasicAuth()
   @Public()
   @Post('register')
-  registerUser(@Headers('authorization') token: string) {
+  registerUser(@Authorization() token: string) {
     return this.authService.register(token);
   }
 
+  @ApiBasicAuth()
   @Public()
   @Post('login')
-  loginUser(@Headers('authorization') token: string) {
+  loginUser(@Authorization() token: string) {
     return this.authService.login(token);
   }
 

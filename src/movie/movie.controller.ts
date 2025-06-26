@@ -25,14 +25,27 @@ import { AuthUser } from 'types/express';
 import { CurrentQueryRunner } from 'src/common/decorator/query-runner.decorator';
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { Throttle } from 'src/common/decorator/throttle.decorator';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('movie')
 export class MovieController {
   constructor(private readonly movieService: MovieService) {}
 
+  @ApiOperation({
+    description: '[Movie]를 pagination 해주는 api',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '요청 성공',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'pagination query param을 잘못 입력했을때',
+  })
   @Public()
-  @Throttle({ count: 5, unit: 'minite' })
+  @Throttle({ count: 30, unit: 'minite' })
   @Get()
   getMovies(@Query() dto: GetMoviesDto, @CurrentUser() user?: AuthUser) {
     const userId = user && user.sub;
