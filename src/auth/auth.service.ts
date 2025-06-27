@@ -1,9 +1,4 @@
-import {
-  ConflictException,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { Repository } from 'typeorm';
@@ -13,6 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import { JwtPayloadInterface } from './strategy/jwt.strategy';
 import { envVariableKeys } from 'src/common/const/env.const';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +19,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
+    private readonly userService: UserService,
   ) {}
 
   async tokenBlock(token: string) {
@@ -109,22 +106,7 @@ export class AuthService {
   async register(rawToken: string) {
     const { email, password } = this.parseBasicToken(rawToken);
 
-    const user = await this.userRepository.findOne({ where: { email } });
-
-    if (user) {
-      throw new ConflictException('이미 사용중인 이메일 입니다.');
-    }
-
-    const hash = await bcrypt.hash(
-      password,
-      this.configService.get<number>(envVariableKeys.hashRounds) as number,
-    );
-
-    await this.userRepository.save({ email, password: hash });
-
-    return this.userRepository.findOne({
-      where: { email },
-    });
+    return this.userService.create({ email, password });
   }
 
   async authenticate(email: string, password: string) {
