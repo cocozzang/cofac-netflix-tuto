@@ -37,9 +37,9 @@ export class UserService {
       throw new ConflictException('이미 사용중인 이메일 입니다.');
     }
 
-    const hash = await this.getHashedPassword(password);
+    const hashPassword = await this.getHashedPassword(password);
 
-    await this.userRepository.save({ email, password: hash });
+    await this.userRepository.save({ email, password: hashPassword });
 
     return this.userRepository.findOne({
       where: { email },
@@ -61,13 +61,17 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const { password } = updateUserDto;
 
-    if (!user) {
+    const hashPassword = password && (await this.getHashedPassword(password));
+
+    const updateResult = await this.userRepository.update(
+      { id },
+      { ...updateUserDto, password: hashPassword },
+    );
+
+    if (updateResult.affected === 0)
       throw new NotFoundException('존재하지 않는 사용자입니다.');
-    }
-
-    await this.userRepository.update({ id }, updateUserDto);
 
     const newUser = await this.userRepository.findOne({ where: { id } });
 
