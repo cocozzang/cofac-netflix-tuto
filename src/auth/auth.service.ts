@@ -1,4 +1,9 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { Repository } from 'typeorm';
@@ -63,12 +68,12 @@ export class AuthService {
   }
 
   async parseBearerToken(rawToken: string, isRefreshToken: boolean) {
-    const basicSplit = rawToken.split(' ');
+    const bearerSplit = rawToken.split(' ');
 
-    if (basicSplit.length !== 2)
+    if (bearerSplit.length !== 2)
       throw new UnauthorizedException('토큰 포맷이 유효하지 않습니다.');
 
-    const [bearer, token] = basicSplit;
+    const [bearer, token] = bearerSplit;
 
     if (bearer.toLowerCase() !== 'bearer')
       throw new UnauthorizedException('토큰 포맷이 유효하지 않습니다.');
@@ -84,12 +89,12 @@ export class AuthService {
       );
 
       if (isRefreshToken && payload.type !== 'refresh')
-        throw new UnauthorizedException(
+        throw new BadRequestException(
           'payload의 token type이 refresh token이 아닙니다.',
         );
 
       if (!isRefreshToken && payload.type !== 'access')
-        throw new UnauthorizedException(
+        throw new BadRequestException(
           'payload의 token type이 access token이 아닙니다.',
         );
 
