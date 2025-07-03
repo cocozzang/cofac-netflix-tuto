@@ -2,7 +2,6 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
-  Get,
   Post,
   Req,
   UseGuards,
@@ -10,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './strategy/local.strategy';
-import { JwtAuthGuard, JwtPayloadInterface } from './strategy/jwt.strategy';
+import { JwtPayloadInterface } from './strategy/jwt.strategy';
 import { Request } from 'express';
 import { Public } from './decorator/public.decorator';
 import { ApiBasicAuth, ApiBearerAuth } from '@nestjs/swagger';
@@ -62,9 +61,9 @@ export class AuthController {
     };
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('private')
-  private(@Req() req: Express.Request) {
-    return req.user;
-  }
+  // @UseGuards(JwtAuthGuard)
+  // @Get('private')
+  // private(@Req() req: Express.Request) {
+  //   return req.user;
+  // }
 }
