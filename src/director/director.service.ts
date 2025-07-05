@@ -48,7 +48,14 @@ export class DirectorService {
   }
 
   async removeDirector(directorId: number) {
-    await this.directorRepository.delete({ id: directorId });
+    const { affected } = await this.directorRepository.delete({
+      id: directorId,
+    });
+
+    if (affected === 0)
+      throw new NotFoundException(
+        `Id가 ${directorId} 인 director는 존재하지 않습니다.`,
+      );
 
     return directorId;
   }
