@@ -41,15 +41,27 @@ export class MovieService {
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
   ) {}
+  private getMovies() {
+    return this.movieRepository
+      .createQueryBuilder('movie')
+      .leftJoinAndSelect('movie.director', 'director')
+      .leftJoinAndSelect('movie.genres', 'genres');
+  }
+
+  private async getLikedMovies(movieIds: number[], userId: number) {
+    return this.movieUserLikeRepository
+      .createQueryBuilder('mul')
+      .leftJoinAndSelect('mul.user', 'user')
+      .leftJoinAndSelect('mul.movie', 'movie')
+      .where('movie.id IN(:...movieIds)', { movieIds })
+      .andWhere('user.id = :userId', { userId })
+      .getMany();
+  }
 
   async findManyMovies(dto: GetMoviesDto, userId?: number) {
     const { title } = dto;
 
-    const qb = this.movieRepository
-      .createQueryBuilder('movie')
-      .leftJoinAndSelect('movie.director', 'director')
-      .leftJoinAndSelect('movie.genres', 'genres');
-
+    const qb = this.getMovies();
     if (title) {
       qb.where('movie.title LIKE :title', { title: `%${title}%` });
     }
@@ -64,15 +76,7 @@ export class MovieService {
       const movieIds = data.map((movie) => movie.id);
 
       const likedMovies =
-        movieIds.length < 1
-          ? []
-          : await this.movieUserLikeRepository
-              .createQueryBuilder('mul')
-              .leftJoinAndSelect('mul.user', 'user')
-              .leftJoinAndSelect('mul.movie', 'movie')
-              .where('movie.id IN(:...movieIds)', { movieIds })
-              .andWhere('user.id = :userId', { userId })
-              .getMany();
+        movieIds.length < 1 ? [] : await this.getLikedMovies(movieIds, userId);
 
       const likedMovieMap = likedMovies.reduce(
         (acc, next) => ({

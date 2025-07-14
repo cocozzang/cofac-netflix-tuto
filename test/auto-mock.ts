@@ -1,4 +1,4 @@
-import { ObjectLiteral, Repository } from 'typeorm';
+import { DataSource, ObjectLiteral, Repository } from 'typeorm';
 
 export function createAutoMock<T>(
   originalClass: new (...args: any[]) => T,
@@ -47,4 +47,79 @@ export function createMockRepository<T extends ObjectLiteral>(): jest.Mocked<
 
   // ✅ unknown을 거쳐서 타입 단언
   return mockRepository as unknown as jest.Mocked<Repository<T>>;
+}
+
+export function createMockCache(): jest.Mocked<Cache> {
+  const mockCache = {
+    get: jest.fn(),
+    set: jest.fn(),
+    del: jest.fn(),
+    reset: jest.fn(),
+    wrap: jest.fn(),
+    store: {
+      get: jest.fn(),
+      set: jest.fn(),
+      del: jest.fn(),
+      reset: jest.fn(),
+      keys: jest.fn(),
+      ttl: jest.fn(),
+      mget: jest.fn(),
+      mset: jest.fn(),
+      mdel: jest.fn(),
+    },
+  };
+
+  return mockCache as unknown as jest.Mocked<Cache>;
+}
+export function createMockDataSource(): jest.Mocked<DataSource> {
+  const mockDataSource = {
+    // 기본 프로퍼티들
+    isInitialized: true,
+    options: {},
+    driver: {},
+
+    // 주요 메서드들
+    initialize: jest.fn(),
+    destroy: jest.fn(),
+    synchronize: jest.fn(),
+    dropDatabase: jest.fn(),
+    runMigrations: jest.fn(),
+    undoLastMigration: jest.fn(),
+    showMigrations: jest.fn(),
+    hasMetadata: jest.fn(),
+    getMetadata: jest.fn(),
+    getRepository: jest.fn(),
+    getTreeRepository: jest.fn(),
+    getMongoRepository: jest.fn(),
+    createQueryBuilder: jest.fn(),
+    createQueryRunner: jest.fn(),
+    transaction: jest.fn(),
+    query: jest.fn(),
+
+    // 매니저들
+    manager: {
+      save: jest.fn(),
+      find: jest.fn(),
+      findOne: jest.fn(),
+      findOneBy: jest.fn(),
+      count: jest.fn(),
+      insert: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+      remove: jest.fn(),
+      createQueryBuilder: jest.fn(),
+      transaction: jest.fn(),
+      query: jest.fn(),
+    },
+
+    // 기타 필요한 프로퍼티들
+    entityMetadatas: [],
+    migrations: [],
+    subscribers: [],
+    entitySchemas: [],
+    namingStrategy: {},
+    logger: {},
+  };
+
+  return mockDataSource as unknown as jest.Mocked<DataSource>;
 }
