@@ -58,6 +58,17 @@ export class MovieService {
       .getMany();
   }
 
+  private renameMovieFile(
+    tempFolder: string,
+    movieFolder: string,
+    createMovieDto: CreateMovieDto,
+  ) {
+    return rename(
+      join(process.cwd(), tempFolder, createMovieDto.movieFileName),
+      join(process.cwd(), movieFolder, createMovieDto.movieFileName),
+    );
+  }
+
   async findManyMovies(dto: GetMoviesDto, userId?: number) {
     const { title } = dto;
 
@@ -196,10 +207,7 @@ export class MovieService {
       .of(movieId)
       .add(genres.map((genre) => genre.id));
 
-    await rename(
-      join(process.cwd(), tempFolder, createMovieDto.movieFileName),
-      join(process.cwd(), movieFolder, createMovieDto.movieFileName),
-    );
+    await this.renameMovieFile(tempFolder, movieFolder, createMovieDto);
 
     return await qr.manager.findOne(MovieEntity, {
       where: {
