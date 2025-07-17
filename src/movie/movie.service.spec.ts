@@ -20,7 +20,6 @@ import { GetMoviesDto } from './dto/get-movies.dto';
 
 describe('MovieService', () => {
   let movieService: MovieService;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let movieServiceAny: any;
   let movieRepository: jest.Mocked<Repository<MovieEntity>>;
   let movieDetailRepository: jest.Mocked<Repository<MovieDetailEntity>>;
