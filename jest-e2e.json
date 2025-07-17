@@ -1,0 +1,16 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "roots": ["src"],
+  "testEnvironment": "node",
+  "testRegex": ".e2e.spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "moduleDirectories": ["node_modules", "<rootDir>/"],
+  "moduleNameMapper": {
+    "^multer$": "<rootDir>/node_modules/.pnpm/@nestjs+platform-express@11.1.3_@nestjs+common@11.1.3_class-transformer@0.5.1_class-val_ebb425fd7c0c4e2030bd94b5ce20f11c/node_modules/multer",
+    "^src/(.*)": "<rootDir>/src/$1"
+  },
+  "preset": "ts-jest"
+}

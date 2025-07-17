@@ -347,7 +347,7 @@ export class MovieService {
 
     await this.movieDetailRepository.delete(movie.detail.id);
 
-    return movieId;
+    return { id: movieId };
   }
 
   async toggleMovieLike(movieId: number, userId: number, isLike: boolean) {
