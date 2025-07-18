@@ -70,6 +70,9 @@ import * as winston from 'winston';
           MovieUserLikeEntity,
         ],
         synchronize: true,
+        ssl: {
+          rejectUnauthorized: false,
+        },
       }),
     }),
     CommonModule,
