@@ -20,6 +20,8 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import { MovieUserLikeEntity } from './entity/movie-user-like.entity';
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import { plainToClass } from 'class-transformer';
+import { ConfigService } from '@nestjs/config';
+import { envVariableKeys } from 'src/common/const/env.const';
 
 @Injectable()
 export class MovieService {
@@ -40,6 +42,7 @@ export class MovieService {
     private readonly commonService: CommonService,
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
+    private readonly configService: ConfigService,
   ) {}
   private getMovies() {
     return this.movieRepository
@@ -63,9 +66,15 @@ export class MovieService {
     movieFolder: string,
     createMovieDto: CreateMovieDto,
   ) {
-    return rename(
-      join(process.cwd(), tempFolder, createMovieDto.movieFileName),
-      join(process.cwd(), movieFolder, createMovieDto.movieFileName),
+    if (this.configService.get<string>(envVariableKeys.env) !== 'prod') {
+      return rename(
+        join(process.cwd(), tempFolder, createMovieDto.movieFileName),
+        join(process.cwd(), movieFolder, createMovieDto.movieFileName),
+      );
+    }
+
+    return this.commonService.moveTempMovieToPermanentStorage(
+      createMovieDto.movieFileName,
     );
   }
 

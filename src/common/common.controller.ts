@@ -7,10 +7,13 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { CommonService } from './common.service';
 
 @ApiBearerAuth()
 @Controller('common')
 export class CommonController {
+  constructor(private readonly commonService: CommonService) {}
+
   @UseInterceptors(
     FileInterceptor('video', {
       limits: {
@@ -35,6 +38,13 @@ export class CommonController {
   ) {
     return {
       fileName: video.filename,
+    };
+  }
+
+  @Post('presigned-url')
+  async createPresignedUrl() {
+    return {
+      url: await this.commonService.createPresignedUrl(),
     };
   }
 }

@@ -49,6 +49,10 @@ import * as winston from 'winston';
         HASH_ROUNDS: Joi.number().required(),
         ACCESS_TOKEN_SECRET: Joi.string().required(),
         REFRESH_TOKEN_SECRET: Joi.string().required(),
+        AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+        AWS_ACCESS_KEY_ID: Joi.string().required(),
+        AWS_REGION: Joi.string().required(),
+        BUCKET_NAME: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRootAsync({
@@ -73,11 +77,11 @@ import * as winston from 'winston';
           configService.get<string>(envVariableKeys.env) === 'prod'
             ? false
             : true,
-        ...(configService.get<string>(envVariableKeys.env) === 'prod' && {
-          ssl: {
-            rejectUnauthorized: false,
-          },
-        }),
+        // ...(configService.get<string>(envVariableKeys.env) === 'prod' && {
+        //   ssl: {
+        //     rejectUnauthorized: false,
+        //   },
+        // }),
       }),
     }),
     CommonModule,

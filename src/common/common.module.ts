@@ -31,7 +31,11 @@ import { DefaultLogger } from './logger/default.logger';
     TypeOrmModule.forFeature([MovieEntity]),
   ],
   controllers: [CommonController],
-  providers: [CommonService, TaskService, DefaultLogger],
+  providers: [
+    CommonService,
+    DefaultLogger,
+    // TaskService
+  ],
   exports: [CommonService, DefaultLogger],
 })
 export class CommonModule {}

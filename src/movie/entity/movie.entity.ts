@@ -50,7 +50,14 @@ export class MovieEntity extends BaseModelEntity {
   detail: MovieDetailEntity;
 
   @Column()
-  @Transform(({ value }) => `http://localhost:3000/${value}`)
+  @Transform(
+    ({ value }) =>
+      process.env.ENV === 'prod'
+        ? `https://${process.env.BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${value}`
+        : `http://localhost:3000/${value}`,
+
+    { toPlainOnly: true },
+  )
   movieFilePath: string;
 
   @ManyToOne(() => DirectorEntity, (director) => director.id, {
