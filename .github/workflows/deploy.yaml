@@ -4,6 +4,16 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
 
 jobs:
   build-and-deploy:
@@ -12,6 +22,12 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v3
+
+      - name: Display deployment info
+        run: |
+          echo "🚀 Deployment started!"
+          echo "Environment: ${{ github.event.inputs.environment || 'production' }}"
+          echo "Triggered by: ${{ github.event_name }}"
 
       - name: set up nodejs
         uses: actions/setup-node@v3
@@ -26,9 +42,7 @@ jobs:
 
       - name: zip artifact for deployment
         run: |
-          zip -r deploy.zip . \
-            -x "node_modules/*" ".git/*" ".github/*" "*.zip" \
-            "*.md" "tests/*" ".env*"
+          zip -r deploy.zip . -x "node_modules/*" ".git/*" ".github/*"
 
       - name: upload to s3
         env:
