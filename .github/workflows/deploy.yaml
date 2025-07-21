@@ -42,7 +42,7 @@ jobs:
 
       - name: zip artifact for deployment
         run: |
-          zip -r deploy.zip . -x "node_modules/*" ".git/*" ".github/*"
+          zip -r deploy.zip .
 
       - name: upload to s3
         env:
