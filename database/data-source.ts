@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
 
-dotenv.config();
+dotenv.config({ path: '.env.prod' });
 
 export default new DataSource({
   type: process.env.DB_TYPE as 'postgres',
@@ -14,4 +14,7 @@ export default new DataSource({
   logging: false,
   entities: ['dist/**/*.entity.js'],
   migrations: ['dist/database/migrations/*.js'],
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });

@@ -37,7 +37,9 @@ import * as winston from 'winston';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
+      envFilePath: process.env.NODE_ENV
+        ? `.env.${process.env.NODE_ENV}`
+        : '.env.dev',
       validationSchema: Joi.object({
         ENV: Joi.string().valid('test', 'dev', 'prod').required(),
         DB_TYPE: Joi.string().valid('postgres').required(),
@@ -47,12 +49,14 @@ import * as winston from 'winston';
         DB_PASSWORD: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
         HASH_ROUNDS: Joi.number().required(),
-        ACCESS_TOKEN_SECRET: Joi.string().required(),
-        REFRESH_TOKEN_SECRET: Joi.string().required(),
-        AWS_SECRET_ACCESS_KEY: Joi.string().required(),
-        AWS_ACCESS_KEY_ID: Joi.string().required(),
-        AWS_REGION: Joi.string().required(),
-        BUCKET_NAME: Joi.string().required(),
+        ...(process.env.NODE_ENV === 'prod' && {
+          ACCESS_TOKEN_SECRET: Joi.string().required(),
+          REFRESH_TOKEN_SECRET: Joi.string().required(),
+          AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+          AWS_ACCESS_KEY_ID: Joi.string().required(),
+          AWS_REGION: Joi.string().required(),
+          BUCKET_NAME: Joi.string().required(),
+        }),
       }),
     }),
     TypeOrmModule.forRootAsync({
