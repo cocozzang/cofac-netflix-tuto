@@ -14,6 +14,7 @@ import { GetMoviesDto } from './dto/get-movies.dto';
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { NotFoundException } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
 describe('MovieService - Integration Test', () => {
   let service: MovieService;
@@ -53,6 +54,7 @@ describe('MovieService - Integration Test', () => {
           UserEntity,
           MovieUserLikeEntity,
         ]),
+        ConfigModule.forRoot(),
       ],
       providers: [MovieService, CommonService],
     }).compile();
@@ -70,6 +72,7 @@ describe('MovieService - Integration Test', () => {
   });
 
   afterAll(async () => {
+    await dataSource.dropDatabase();
     await dataSource.destroy();
   });
 
@@ -260,8 +263,8 @@ describe('MovieService - Integration Test', () => {
           where: { id: removeId },
         });
 
-        expect(result).toBe(removeId);
-        expect(DBResult).toBe(null);
+        expect(result).toEqual({ id: removeId });
+        expect(DBResult).toBeNull();
       });
 
       it('should throw error if movie does not exist', async () => {

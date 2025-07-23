@@ -17,6 +17,7 @@ import {
 } from 'test/auto-mock';
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { GetMoviesDto } from './dto/get-movies.dto';
+import { ConfigModule } from '@nestjs/config';
 
 describe('MovieService', () => {
   let movieService: MovieService;
@@ -33,6 +34,7 @@ describe('MovieService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [ConfigModule.forRoot()],
       providers: [
         MovieService,
         {
