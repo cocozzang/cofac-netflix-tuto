@@ -31,7 +31,10 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { ThrottleInterceptor } from './common/interceptor/throttle.interceptor';
 import { ScheduleModule } from '@nestjs/schedule';
 import { WinstonModule } from 'nest-winston';
+import { ChatModule } from './chat/chat.module';
 import * as winston from 'winston';
+import { ChatRoomEntity } from './chat/entity/chat-room.entity';
+import { ChatEntity } from './chat/entity/chat.entity';
 
 @Module({
   imports: [
@@ -76,6 +79,8 @@ import * as winston from 'winston';
           GenreEntity,
           UserEntity,
           MovieUserLikeEntity,
+          ChatEntity,
+          ChatRoomEntity,
         ],
         synchronize:
           configService.get<string>(envVariableKeys.env) === 'prod'
@@ -130,6 +135,7 @@ import * as winston from 'winston';
     GenreModule,
     AuthModule,
     UserModule,
+    ChatModule,
   ],
 
   providers: [
