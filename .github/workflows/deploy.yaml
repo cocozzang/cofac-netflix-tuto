@@ -66,38 +66,38 @@ jobs:
           BUCKET_NAME: ${{secrets.BUCKET_NAME}}
         run: |
           touch .env.test
-          echo ENV="test" >> test.env
-          echo DB_TYPE="$DB_TYPE" >> test.env
-          echo DB_HOST="localhost" >> test.env
-          echo DB_PORT="$DB_PORT" >> test.env
-          echo DB_USERNAME="$DB_USERNAME" >> test.env
-          echo DB_PASSWORD="$DB_PASSWORD" >> test.env
-          echo DB_DATABASE="$DB_DATABASE" >> test.env
-          echo HASH_ROUNDS="$HASH_ROUNDS" >> test.env
-          echo ACCESS_TOKEN_SECRET="$ACCESS_TOKEN_SECRET" >> test.env
-          echo REFRESH_TOKEN_SECRET="$REFRESH_TOKEN_SECRET" >> test.env
-          echo AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" >> test.env
-          echo AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" >> test.env
-          echo AWS_REGION="$AWS_REGION" >> test.env
-          echo BUCKET_NAME="$BUCKET_NAME" >> test.env
+          echo ENV="test" >> .env.test
+          echo DB_TYPE="$DB_TYPE" >> .env.test
+          echo DB_HOST="localhost" >> .env.test
+          echo DB_PORT="$DB_PORT" >> .env.test
+          echo DB_USERNAME="$DB_USERNAME" >> .env.test
+          echo DB_PASSWORD="$DB_PASSWORD" >> .env.test
+          echo DB_DATABASE="$DB_DATABASE" >> .env.test
+          echo HASH_ROUNDS="$HASH_ROUNDS" >> .env.test
+          echo ACCESS_TOKEN_SECRET="$ACCESS_TOKEN_SECRET" >> .env.test
+          echo REFRESH_TOKEN_SECRET="$REFRESH_TOKEN_SECRET" >> .env.test
+          echo AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" >> .env.test
+          echo AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" >> .env.test
+          echo AWS_REGION="$AWS_REGION" >> .env.test
+          echo BUCKET_NAME="$BUCKET_NAME" >> .env.test
           echo ".env.test created"
           cat .env.test
 
           touch .env.prod
-          echo ENV="$ENV" >> .env
-          echo DB_TYPE="$DB_TYPE" >> .env
-          echo DB_HOST="$DB_HOST" >> .env
-          echo DB_PORT="$DB_PORT" >> .env
-          echo DB_USERNAME="$DB_USERNAME" >> .env
-          echo DB_PASSWORD="$DB_PASSWORD" >> .env
-          echo DB_DATABASE="$DB_DATABASE" >> .env
-          echo HASH_ROUNDS="$HASH_ROUNDS" >> .env
-          echo ACCESS_TOKEN_SECRET="$ACCESS_TOKEN_SECRET" >> .env
-          echo REFRESH_TOKEN_SECRET="$REFRESH_TOKEN_SECRET" >> .env
-          echo AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" >> .env
-          echo AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" >> .env
-          echo AWS_REGION="$AWS_REGION" >> .env
-          echo BUCKET_NAME="$BUCKET_NAME" >> .env
+          echo ENV="$ENV" >> .env.prod
+          echo DB_TYPE="$DB_TYPE" >> .env.prod
+          echo DB_HOST="$DB_HOST" >> .env.prod
+          echo DB_PORT="$DB_PORT" >> .env.prod
+          echo DB_USERNAME="$DB_USERNAME" >> .env.prod
+          echo DB_PASSWORD="$DB_PASSWORD" >> .env.prod
+          echo DB_DATABASE="$DB_DATABASE" >> .env.prod
+          echo HASH_ROUNDS="$HASH_ROUNDS" >> .env.prod
+          echo ACCESS_TOKEN_SECRET="$ACCESS_TOKEN_SECRET" >> .env.prod
+          echo REFRESH_TOKEN_SECRET="$REFRESH_TOKEN_SECRET" >> .env.prod
+          echo AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" >> .env.prod
+          echo AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" >> .env.prod
+          echo AWS_REGION="$AWS_REGION" >> .env.prod
+          echo BUCKET_NAME="$BUCKET_NAME" >> .env.prod
           echo ".env.prod created"
           cat .env.prod
 
