@@ -1,8 +1,16 @@
 import { Exclude, Type } from 'class-transformer';
+import { ChatRoomEntity } from 'src/chat/entity/chat-room.entity';
+import { ChatEntity } from 'src/chat/entity/chat.entity';
 import { BaseModelEntity } from 'src/common/entity/base-model.entity';
 import { MovieUserLikeEntity } from 'src/movie/entity/movie-user-like.entity';
 import { MovieEntity } from 'src/movie/entity/movie.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 export enum RoleEnum {
   admin,
@@ -33,4 +41,10 @@ export class UserEntity extends BaseModelEntity {
 
   @OneToMany(() => MovieUserLikeEntity, (mul) => mul.user)
   likedMovies: MovieUserLikeEntity[];
+
+  @OneToMany(() => ChatEntity, (chat) => chat.author)
+  chats: ChatEntity[];
+
+  @ManyToMany(() => ChatRoomEntity, (chatroom) => chatroom.users)
+  chatRooms: ChatRoomEntity[];
 }
