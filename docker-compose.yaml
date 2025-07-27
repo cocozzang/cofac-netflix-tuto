@@ -10,7 +10,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-netflix}
       PGDATA: /data/postgres
     volumes:
-      - postgres-data:/data/postgres
+      - ./volumes/postgres-data:/data/postgres
     networks:
       - netflix-network
     restart: unless-stopped
@@ -29,17 +29,23 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@admin.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
     volumes:
-      - pgadmin-data:/var/lib/pgadmin
+      - ./volumes/pgadmin-data:/var/lib/pgadmin
     networks:
       - netflix-network
     restart: unless-stopped
     depends_on:
       - postgres
 
+  redis:
+    image: redis:8.0.3-alpine
+    container_name: redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - ./volumes/redis-data:/data
+    networks:
+      - netflix-network
+
 networks:
   netflix-network:
     driver: bridge
-
-volumes:
-  postgres-data:
-  pgadmin-data:
