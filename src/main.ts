@@ -3,14 +3,12 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import ffmpeg from '@ffmpeg-installer/ffmpeg';
+import * as ffmpeg from '@ffmpeg-installer/ffmpeg';
 import * as ffmpegFluent from 'fluent-ffmpeg';
 import * as ffmprobe from 'ffprobe-static';
 
-/* eslint-disable */
 ffmpegFluent.setFfmpegPath(ffmpeg.path);
 ffmpegFluent.setFfprobePath(ffmprobe.path);
-/* eslint-enable */
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
