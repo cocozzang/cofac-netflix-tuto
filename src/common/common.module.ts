@@ -5,10 +5,12 @@ import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { join } from 'path';
 import { v4 } from 'uuid';
-import { TaskService } from './task.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MovieEntity } from 'src/movie/entity/movie.entity';
 import { DefaultLogger } from './logger/default.logger';
+import { BullModule } from '@nestjs/bullmq';
+import { ConfigService } from '@nestjs/config';
+import { envVariableKeys } from './const/env.const';
 
 @Module({
   imports: [
@@ -29,6 +31,18 @@ import { DefaultLogger } from './logger/default.logger';
       }),
     }),
     TypeOrmModule.forFeature([MovieEntity]),
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>(envVariableKeys.redisHost),
+          port: +configService.get(envVariableKeys.redisPort),
+        },
+      }),
+    }),
+    BullModule.registerQueue({
+      name: 'thumbnail-genration',
+    }),
   ],
   controllers: [CommonController],
   providers: [
