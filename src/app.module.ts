@@ -5,7 +5,7 @@ import {
   RequestMethod,
 } from '@nestjs/common';
 import { MovieModule } from './movie/movie.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConditionalModule, ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { MovieEntity } from './movie/entity/movie.entity';
@@ -35,6 +35,7 @@ import { ChatModule } from './chat/chat.module';
 import * as winston from 'winston';
 import { ChatRoomEntity } from './chat/entity/chat-room.entity';
 import { ChatEntity } from './chat/entity/chat.entity';
+import { WorkerModule } from './worker/worker.module';
 
 @Module({
   imports: [
@@ -136,6 +137,10 @@ import { ChatEntity } from './chat/entity/chat.entity';
     AuthModule,
     UserModule,
     ChatModule,
+    ConditionalModule.registerWhen(
+      WorkerModule,
+      (env) => env['TYPE'] === 'worker',
+    ),
   ],
 
   providers: [
