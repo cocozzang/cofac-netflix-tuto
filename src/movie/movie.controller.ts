@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   Query,
+  Req,
 } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/create-movie.dto';
@@ -26,6 +27,7 @@ import { CurrentQueryRunner } from 'src/common/decorator/current-query-runner.de
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { Throttle } from 'src/common/decorator/throttle.decorator';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Request } from 'express';
 
 @ApiBearerAuth()
 @UseInterceptors(ClassSerializerInterceptor)
@@ -64,10 +66,18 @@ export class MovieController {
 
   @Public()
   @Get(':id')
-  getMovie(
-    @Param('id', ParseIntPipe)
-    id: number,
-  ) {
+  getMovie(@Param('id', ParseIntPipe) id: number, @Req() req: Request) {
+    const session = req.session;
+
+    const movieCount = session.movieCount ?? {};
+
+    req.session.movieCount = {
+      ...movieCount,
+      [id]: movieCount[id] ? movieCount[id] + 1 : 1,
+    };
+
+    console.log(session);
+
     return this.movieService.findMovieById(id);
   }
 

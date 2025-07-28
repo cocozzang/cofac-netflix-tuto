@@ -53,6 +53,7 @@ import { WorkerModule } from './worker/worker.module';
         DB_PASSWORD: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
         HASH_ROUNDS: Joi.number().required(),
+        SESSION_SECRET: Joi.string().required(),
         ...(process.env.NODE_ENV === 'prod' && {
           ACCESS_TOKEN_SECRET: Joi.string().required(),
           REFRESH_TOKEN_SECRET: Joi.string().required(),
@@ -61,6 +62,9 @@ import { WorkerModule } from './worker/worker.module';
           AWS_REGION: Joi.string().required(),
           BUCKET_NAME: Joi.string().required(),
         }),
+        REDIS_HOST: Joi.string().required(),
+        REDIS_PORT: Joi.string().required(),
+        REDIS_PASSWORD: Joi.string().required(),
       }),
     }),
     TypeOrmModule.forRootAsync({

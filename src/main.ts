@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as ffmpeg from '@ffmpeg-installer/ffmpeg';
 import * as ffmpegFluent from 'fluent-ffmpeg';
 import * as ffmprobe from 'ffprobe-static';
+import * as session from 'express-session';
 
 ffmpegFluent.setFfmpegPath(ffmpeg.path);
 ffmpegFluent.setFfprobePath(ffmprobe.path);
@@ -40,6 +41,14 @@ async function bootstrap() {
       transformOptions: {
         enableImplicitConversion: true,
       },
+    }),
+  );
+
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET as string,
+      resave: true,
+      saveUninitialized: true,
     }),
   );
 
